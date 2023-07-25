@@ -1,3 +1,5 @@
+using AniPlannerApi.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +16,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using(var scope = app.Services.CreateScope())
+{
+    try
+    {
+        Console.WriteLine("DB migration started");
+        var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+        db.Database.Migrate(); // Creates and migrates database
+        AnimeSeed.SeedData(db);
+
+    }
+    catch(Exception ex)
+    {
+        Console.WriteLine($"Error running migration {ex.Message}");
+    }
 }
 
 app.UseHttpsRedirection();

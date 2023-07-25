@@ -1,8 +1,10 @@
+using AniPlannerApi.Models;
+
 namespace AniPlannerApi.Data;
 
 public class AnimeSeed
 {
-    public static bool SeedData()
+    public static bool SeedData(DataContext context)
     {
         Console.WriteLine("ATTEMPTING SEED...");
         try
@@ -18,6 +20,10 @@ public class AnimeSeed
                 }
             }
 
+            context.Media.Add(new Media
+            {
+                
+            });
             Console.WriteLine("SEEDED...");
             return true;
         }
