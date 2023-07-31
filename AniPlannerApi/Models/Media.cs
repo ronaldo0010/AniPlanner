@@ -18,15 +18,16 @@ public class Media
     /// Adds the tags given to the Media object as media tags
     /// </summary>
     /// <param name="tags">List of tags.</param>
-    public void AddTags(List<Tag> tags)
+    public void AddTags(List<string> tags)
     {
         foreach (var tag in tags)
         {
             MediaTags.Add(new MediaTag
             {
-                Tag = tag,
-                TagId = tag.TagId,
-                Media = this,
+                Tag = new Tag
+                {
+                    Name = tag
+                },
                 MediaId = MediaId
             });
         }

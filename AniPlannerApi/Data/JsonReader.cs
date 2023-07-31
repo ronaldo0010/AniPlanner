@@ -2,6 +2,24 @@ using Newtonsoft.Json;
 
 namespace AniPlannerApi.Data;
 
+public class AnimeSeason
+{
+    public string Season { get; set; }
+    public int Year { get; set; }
+}
+
+public class AnimeData
+{
+    public List<string> Sources { get; set; }
+    public string Title { get; set; }
+    public string Type { get; set; }
+    public int Episodes { get; set; }
+    public string Status { get; set; }
+    public AnimeSeason AnimeSeason { get; set; }
+    public string Picture { get; set; }
+    public List<string> Tags { get; set; }
+}
+
 public class JsonReader
 {
     private readonly string _filePath;
@@ -10,7 +28,7 @@ public class JsonReader
     public JsonReader(string filePath)
     {
         _filePath = filePath;
-        _batchSize = 100;
+        _batchSize = 10;
     }
 
     public IEnumerable<string> ReadBatches()
