@@ -1,5 +1,4 @@
 using AniPlannerApi.Data;
-using AniPlannerApi.Data.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = builder.Configuration.GetConnectionString("Connection");
+
 builder.Services
     .AddDbContext<DataContext>(options => options
-        .UseNpgsql(ConnectionStringBuilder
-            .Build("AniPlan")));
+        .UseNpgsql(connectionString));
 
 var app = builder.Build();
 
