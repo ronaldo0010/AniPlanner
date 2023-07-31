@@ -1,3 +1,4 @@
+using System.Data.Common;
 using AniPlannerApi.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,8 +33,8 @@ using(var scope = app.Services.CreateScope())
         Console.WriteLine("DB migration started");
         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
         db.Database.Migrate(); // Creates and migrates database
-        AnimeSeed.SeedData(db);
-
+        var isSeeded = await AnimeSeed.SeedData(db);
+        if (!isSeeded) throw new Exception("Seed Data Failed");
     }
     catch(Exception ex)
     {

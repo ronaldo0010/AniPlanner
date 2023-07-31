@@ -31,7 +31,7 @@ public static class AnimeSeed
         public List<string> Tags { get; set; }
     }
     
-    public static bool SeedData(DataContext context)
+    public static async Task<bool> SeedData(DataContext context)
     {
         Console.WriteLine("ATTEMPTING SEED...");
         try
@@ -50,42 +50,53 @@ public static class AnimeSeed
             // Deserialize the JSON data to a list of AnimeData
             var animeDataListWrapper = serializer.Deserialize<AnimeDataWrapper>(jsonReader);            
             var animeDataList = animeDataListWrapper?.Data ?? Enumerable.Empty<AnimeData>();
+            var batchSize = 1000;
             
             // Map AnimeData to Media and add to the mediaList
-            const int batchSize = 1000;
-            var batchCount = (int)Math.Ceiling((double)animeDataList.Count() / batchSize);
+            var batchCount = (animeDataList.Count() + batchSize - 1) / batchSize;
 
-            for (var i = 0; i < batchCount; i++)
+            var tasks = new List<Task>();
+
+            for (int i = 0; i < batchCount; i++)
             {
                 var batchAnimeData = animeDataList
                     .Skip(i * batchSize)
                     .Take(batchSize)
                     .ToList();
-                
+
                 var mediaList = new List<Media>();
 
-                Parallel.ForEach(batchAnimeData, animeData =>
+                await Task.Run(() =>
                 {
-                    var media = new Media
+                    Parallel.ForEach(batchAnimeData, animeData =>
                     {
-                        Type = ParseMediaType(animeData.Type),
-                        Title = animeData.Title,
-                        Status = ParseMediaStatus(animeData.Status),
-                        PictureUrl = animeData.Picture,
-                        Episodes = animeData.Episodes
-                    };
-        
-                    media.AddTags(animeData.Tags);
+                        var media = new Media
+                        {
+                            Type = ParseMediaType(animeData.Type),
+                            Title = animeData.Title,
+                            Status = ParseMediaStatus(animeData.Status),
+                            PictureUrl = animeData.Picture,
+                            Episodes = animeData.Episodes
+                        };
 
-                    lock (mediaList)
-                    {
-                        mediaList.Add(media);
-                    }
+                        // TODO: clean up for duplicate tags
+                        media.AddTags(animeData.Tags);
+                        
+                        lock (mediaList)
+                        {
+                            mediaList.Add(media);
+                        }
+                    });
                 });
-                Console.WriteLine($"{i}/{batchCount} completed...");
-                context.Media.AddRange(mediaList);
-                context.SaveChanges();
+
+                Console.WriteLine($"{i + 1}/{batchCount} completed...");
+
+                tasks.Add(context.Media.AddRangeAsync(mediaList));
             }
+
+            await Task.WhenAll(tasks);
+            await context.SaveChangesAsync();
+            
             
             Console.WriteLine("SEEDED...");
             return true;
@@ -102,24 +113,29 @@ public static class AnimeSeed
         
         
     }
+    // TODO: Add documentation 
     private static MediaType ParseMediaType(string type)
     {
-        // Implement your logic to map the string 'type' to the corresponding MediaType enum value
-        return MediaType.TV;
+        return type.ToLower() switch
+        {
+            "tv" => MediaType.TV,
+            "movie" => MediaType.MOVIE,
+            "ova" => MediaType.OVA,
+            "ONA" => MediaType.ONA,
+            "SPECIAL" => MediaType.SPECIAL,
+            _ => MediaType.UNKNOWN
+        };
     }
 
     // Helper method to parse string to MediaStatus enum
     private static MediaStatus ParseMediaStatus(string status)
     {
-        // Implement your logic to map the string 'status' to the corresponding MediaStatus enum value
-        return MediaStatus.ONGOING;
-    }
-
-    // Helper method to map tag string to MediaTag
-    private static Tag MapToTag(string tag)
-    {
-        // Implement your logic to map the tag string to a MediaTag object
-        // Return a new MediaTag object based on the tag string
-        return new Tag { Name = tag};
+        return status.ToLower() switch
+        {
+            "finished" => MediaStatus.FINISHED,
+            "ongoing" => MediaStatus.ONGOING,
+            "upcoming" => MediaStatus.UPCOMING,
+            _ => MediaStatus.UNKNOWN
+        };
     }
 }
