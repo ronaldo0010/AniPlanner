@@ -7,18 +7,21 @@ namespace AniPlannerApi.Data;
 
 public static class AnimeSeed
 {
+    
+    // TODO: Add documentation
     public class AnimeDataWrapper
     {
         public List<AnimeData> Data { get; set; }
-        
     }
-
+    
+    // TODO: Add documentation 
     public class AnimeSeason
     {
         public string Season { get; set; }
         public int Year { get; set; }
     }
-
+    
+    // TODO: Add documentation 
     public class AnimeData
     {
         public List<string> Sources { get; set; }
@@ -31,6 +34,7 @@ public static class AnimeSeed
         public List<string> Tags { get; set; }
     }
     
+    // TODO: Add documentation 
     public static async Task<bool> SeedData(DataContext context)
     {
         Console.WriteLine("==== ATTEMPTING SEEDING ====");
@@ -47,7 +51,7 @@ public static class AnimeSeed
             
             // TODO: possible performance refactor such that yield returns batches 
             // Map AnimeData to Media and add to the mediaList
-            var batchCount = GetBatchCount(animeDataList.Count(), batchSize);
+            var batchCount = GetBatchCount(animeDataList.Count, batchSize);
             var tasks = new List<Task>();
 
             Console.WriteLine("==== STARTING SEEDING ====");
@@ -102,11 +106,13 @@ public static class AnimeSeed
         }
     }
 
+    // TODO: Add documentation 
     private static int GetBatchCount(int count, int batchSize)
     {
         return (count + batchSize - 1) / batchSize;
     }
-
+    
+    // TODO: Add documentation 
     private static IEnumerable<AnimeData> GetDataList(string dataFilePath)
     {
         var fileStream = new FileStream(dataFilePath, FileMode.Open, FileAccess.Read);
@@ -136,7 +142,7 @@ public static class AnimeSeed
         };
     }
 
-    // Helper method to parse string to MediaStatus enum
+    // TODO: Add documentation 
     private static MediaStatus ParseMediaStatus(string status)
     {
         return status.ToLower() switch
