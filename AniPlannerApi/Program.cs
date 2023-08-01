@@ -1,12 +1,11 @@
-using System.Data.Common;
 using AniPlannerApi.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,18 +29,17 @@ using(var scope = app.Services.CreateScope())
 {
     try
     {
-        Console.WriteLine("DB migration started");
+        Console.WriteLine("==== APPLYING MIGRATIONS ====");
         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
         db.Database.Migrate(); // Creates and migrates database
         var isSeeded = await AnimeSeed.SeedData(db);
         if (!isSeeded) throw new Exception("Seed Data Failed");
+        Console.WriteLine("==== FINISHED MIGRATIONS ====");
     }
     catch(Exception ex)
     {
-        Console.WriteLine($"================\n" +
-                          $"ERROR APPLYING MIGRATION:" +
-                          $"\n{ex.Message}\n" +
-                          $"================");
+        var msg = $"================\nERROR APPLYING MIGRATION:\n{ex.Message}\n================";
+        Console.WriteLine(msg);
     }
 }
 
