@@ -33,31 +33,25 @@ public static class AnimeSeed
     
     public static async Task<bool> SeedData(DataContext context)
     {
-        Console.WriteLine("ATTEMPTING SEED...");
+        Console.WriteLine("==== ATTEMPTING SEEDING ====");
         try
         {
-            var currentDir = Directory.GetCurrentDirectory();
-            var dataFilePath = $@"{currentDir}\Data\anime-data.json";
+            // check media has been seeded
+            if (context.Media.Any()) return true;
             
-            Console.WriteLine("SEEDING...");
-            var fileStream = new FileStream(dataFilePath, FileMode.Open, FileAccess.Read);
-            var jsonReader = new JsonTextReader(new StreamReader(fileStream));
-                
-            var serializer = new JsonSerializer();
-            serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
-            serializer.NullValueHandling = NullValueHandling.Ignore;
+            const string fileName = "anime-data.json";
+            const int batchSize = 1000;
             
-            // Deserialize the JSON data to a list of AnimeData
-            var animeDataListWrapper = serializer.Deserialize<AnimeDataWrapper>(jsonReader);            
-            var animeDataList = animeDataListWrapper?.Data ?? Enumerable.Empty<AnimeData>();
-            var batchSize = 1000;
+            var filePath = $@"{Directory.GetCurrentDirectory()}\Data\{fileName}";
+            var animeDataList = GetDataList(filePath).ToList();
             
             // Map AnimeData to Media and add to the mediaList
-            var batchCount = (animeDataList.Count() + batchSize - 1) / batchSize;
+            var batchCount = GetBatchCount(animeDataList.Count(), batchSize);
 
             var tasks = new List<Task>();
 
-            for (int i = 0; i < batchCount; i++)
+            Console.WriteLine("==== STARTING SEEDING ====");
+            for (var i = 0; i < batchCount; i++)
             {
                 var batchAnimeData = animeDataList
                     .Skip(i * batchSize)
@@ -97,22 +91,37 @@ public static class AnimeSeed
             await Task.WhenAll(tasks);
             await context.SaveChangesAsync();
             
-            
-            Console.WriteLine("SEEDED...");
+            Console.WriteLine("==== SUCCESSFUL SEEDING ====");
             return true;
         }
         catch (Exception e)
         {
             Console.WriteLine("FAILED SEEDING!!");
-            Console.WriteLine("ERROR:");
-            Console.WriteLine("================");
-            Console.WriteLine(e);
-            Console.WriteLine("================");
+            Console.WriteLine($"================\nERROR:\n{e}\n================");
             return false;
         }
-        
-        
     }
+
+    private static int GetBatchCount(int count, int batchSize)
+    {
+        return (count + batchSize - 1) / batchSize;
+    }
+
+    private static IEnumerable<AnimeData> GetDataList(string dataFilePath)
+    {
+        var fileStream = new FileStream(dataFilePath, FileMode.Open, FileAccess.Read);
+        var jsonReader = new JsonTextReader(new StreamReader(fileStream));
+                
+        var serializer = new JsonSerializer();
+        serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
+        serializer.NullValueHandling = NullValueHandling.Ignore;
+            
+        // Deserialize the JSON data to a list of AnimeData
+        var animeDataListWrapper = serializer.Deserialize<AnimeDataWrapper>(jsonReader);            
+        
+        return animeDataListWrapper?.Data ?? Enumerable.Empty<AnimeData>();
+    }
+
     // TODO: Add documentation 
     private static MediaType ParseMediaType(string type)
     {

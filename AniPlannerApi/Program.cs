@@ -38,7 +38,10 @@ using(var scope = app.Services.CreateScope())
     }
     catch(Exception ex)
     {
-        Console.WriteLine($"Error running migration {ex.Message}");
+        Console.WriteLine($"================\n" +
+                          $"ERROR APPLYING MIGRATION:" +
+                          $"\n{ex.Message}\n" +
+                          $"================");
     }
 }
 
