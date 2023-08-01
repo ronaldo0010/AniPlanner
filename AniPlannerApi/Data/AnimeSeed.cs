@@ -45,9 +45,9 @@ public static class AnimeSeed
             var filePath = $@"{Directory.GetCurrentDirectory()}\Data\{fileName}";
             var animeDataList = GetDataList(filePath).ToList();
             
+            // TODO: possible performance refactor such that yield returns batches 
             // Map AnimeData to Media and add to the mediaList
             var batchCount = GetBatchCount(animeDataList.Count(), batchSize);
-
             var tasks = new List<Task>();
 
             Console.WriteLine("==== STARTING SEEDING ====");
