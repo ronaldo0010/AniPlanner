@@ -1,11 +1,11 @@
-using AniPlannerApi.Data;
 using Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly DataContext _repoContext;
+    private readonly DbContext _repoContext;
     private IMediaRepository _media = null!;
     private ITagRepository _tag = null!;
     private IUserRepository _user = null!;
@@ -46,7 +46,7 @@ public class UnitOfWork : IUnitOfWork
         throw new NotImplementedException();
     }
 
-    public UnitOfWork(DataContext context)
+    public UnitOfWork(DbContext context)
     {
         _repoContext = context;
     }

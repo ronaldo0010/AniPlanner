@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using AniPlannerApi.Data;
 using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ namespace Repository;
 
 public class MediaRepository : GenericRepo<Media>, IMediaRepository
 {
-    public MediaRepository(DataContext context) : base(context) { }
+    public MediaRepository(DbContext context) : base(context) { }
     public IQueryable<Media> FindAll()
     {
         throw new NotImplementedException();

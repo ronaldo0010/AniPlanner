@@ -1,7 +1,8 @@
 using AnimeSeed;
 using AniPlannerApi.Data;
-using Entities;
+using Contracts;
 using Microsoft.EntityFrameworkCore;
+using Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services
     .AddDbContext<DataContext>(options => options
         .UseNpgsql(connectionString));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
