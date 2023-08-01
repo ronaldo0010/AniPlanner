@@ -1,6 +1,6 @@
 using AnimeSeed;
-using AniPlannerApi.Data;
 using Contracts;
+using Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 

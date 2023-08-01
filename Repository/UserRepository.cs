@@ -1,10 +1,10 @@
 using Contracts;
+using Entities.Data;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
 public class UserRepository :GenericRepo<User>, IUserRepository
 {
-    public UserRepository(DbContext context) : base(context) { }
+    public UserRepository(DataContext context) : base(context) { }
 }

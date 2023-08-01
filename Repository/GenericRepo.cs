@@ -1,18 +1,17 @@
 using System.Linq.Expressions;
 using Contracts;
+using Entities.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
 public abstract class GenericRepo<T> : IGenericRepo<T> where T : class
 {
-    public DbContext _context { get; set; }
-    public DbSet<T> _tabel { get; set; }
+    public DataContext _context { get; set; }
 
-    public GenericRepo(DbContext context)
+    public GenericRepo(DataContext context)
     {
         _context = context;
-        _tabel = context.Set<T>();
     }
     public IQueryable<T> FindAll()
     {

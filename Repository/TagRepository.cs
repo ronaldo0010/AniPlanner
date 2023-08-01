@@ -1,10 +1,10 @@
 using Contracts;
+using Entities.Data;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
 public class TagRepository : GenericRepo<Tag>, ITagRepository 
 {
-    public TagRepository(DbContext context) : base(context) { }
+    public TagRepository(DataContext context) : base(context) { }
 }

@@ -1,11 +1,11 @@
 using Contracts;
-using Microsoft.EntityFrameworkCore;
+using Entities.Data;
 
 namespace Repository;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly DbContext _repoContext;
+    private DataContext _repoContext;
     private IMediaRepository _media = null!;
     private ITagRepository _tag = null!;
     private IUserRepository _user = null!;
@@ -43,10 +43,10 @@ public class UnitOfWork : IUnitOfWork
 
     public void Save()
     {
-        throw new NotImplementedException();
+        _repoContext.SaveChanges();
     }
 
-    public UnitOfWork(DbContext context)
+    public UnitOfWork(DataContext context)
     {
         _repoContext = context;
     }

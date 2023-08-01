@@ -1,17 +1,17 @@
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AniPlannerApi.Data;
+namespace Entities.Data;
 
 public class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options) {}
     
-    public virtual DbSet<User> Users { get; set; }
-    public virtual DbSet<Tag> Tags { get; set; }
-    public virtual DbSet<Media> Media { get; set; }
-    public DbSet<MediaTag> MediaTags { get; set; }
-    
+    public virtual DbSet<User> Users { get; set; } = null!;
+    public virtual DbSet<Tag> Tags { get; set; } = null!;
+    public virtual DbSet<Media> Media { get; set; } = null!;
+    public DbSet<MediaTag> MediaTags { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MediaTag>()
