@@ -1,4 +1,4 @@
-namespace AniPlannerApi.Interfaces;
+namespace Contracts;
 
 public class IMediaRepository
 {

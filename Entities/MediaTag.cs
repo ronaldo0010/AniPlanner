@@ -1,4 +1,4 @@
-namespace AniPlannerApi.Models;
+namespace Entities;
 
 public class MediaTag
 {

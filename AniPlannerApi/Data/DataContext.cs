@@ -1,4 +1,4 @@
-using AniPlannerApi.Models;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AniPlannerApi.Data;

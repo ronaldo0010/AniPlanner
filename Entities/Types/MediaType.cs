@@ -1,4 +1,4 @@
-namespace AniPlannerApi.Models.Types;
+namespace Entities.Types;
 
 public enum MediaType
 {

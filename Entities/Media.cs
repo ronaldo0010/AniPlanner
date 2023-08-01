@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using AniPlannerApi.Models.Types;
+using Entities.Types;
 
-namespace AniPlannerApi.Models;
+namespace Entities;
 
 public class Media
 {

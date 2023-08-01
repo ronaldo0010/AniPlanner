@@ -1,4 +1,6 @@
+using AnimeSeed;
 using AniPlannerApi.Data;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +34,17 @@ using(var scope = app.Services.CreateScope())
         Console.WriteLine("==== APPLYING MIGRATIONS ====");
         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
         db.Database.Migrate(); // Creates and migrates database
-        var isSeeded = await AnimeSeed.SeedData(db);
-        if (!isSeeded) throw new Exception("Seed Data Failed");
+        var tasks = new List<Task>();
+
+        // TODO: check that this runs in batches
+        await foreach (var mediaList in DataSeeding.ProcessDataAsync())
+        {
+            tasks.Add(db.AddRangeAsync(mediaList));
+        }
+        
+        await Task.WhenAll(tasks);
+        await db.SaveChangesAsync();
+
         Console.WriteLine("==== FINISHED MIGRATIONS ====");
     }
     catch(Exception ex)
