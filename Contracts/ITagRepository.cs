@@ -1,6 +1,8 @@
+using Entities.Models;
+
 namespace Contracts;
 
-public class ITagRepository
+public interface ITagRepository : IGenericRepo<Tag>
 {
     
 }

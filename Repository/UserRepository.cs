@@ -1,15 +1,10 @@
 using AniPlannerApi.Data;
 using Contracts;
+using Entities.Models;
 
 namespace Repository;
 
-public class UserRepository : IUserRepository
+public class UserRepository :GenericRepo<User>, IUserRepository
 {
-    private DataContext _context;
-
-    public UserRepository(DataContext context)
-    {
-        _context = context;
-    }
-
+    public UserRepository(DataContext context) : base(context) { }
 }

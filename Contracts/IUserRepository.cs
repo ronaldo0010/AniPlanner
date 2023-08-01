@@ -1,6 +1,8 @@
+using Entities.Models;
+
 namespace Contracts;
 
 
-public interface IUserRepository
+public interface IUserRepository : IGenericRepo<User>
 {
 }

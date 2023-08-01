@@ -1,6 +1,8 @@
+using Entities.Models;
+
 namespace Contracts;
 
-public class IMediaRepository
+public interface IMediaRepository : IGenericRepo<Media>
 {
     
 }

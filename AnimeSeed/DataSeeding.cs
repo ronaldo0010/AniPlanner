@@ -1,4 +1,4 @@
-using Entities;
+using Entities.Models;
 using Entities.Types;
 using Newtonsoft.Json;
 
