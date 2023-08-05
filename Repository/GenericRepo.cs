@@ -15,12 +15,12 @@ public abstract class GenericRepo<T> : IGenericRepo<T> where T : class
     }
     public IQueryable<T> FindAll()
     {
-        throw new NotImplementedException();
+        return _context.Set<T>();
     }
 
     public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
     {
-        throw new NotImplementedException();
+        return _context.Set<T>().Where(expression);
     }
 
     public bool Create(T entity)
