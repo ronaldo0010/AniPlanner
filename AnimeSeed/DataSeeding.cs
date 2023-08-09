@@ -1,6 +1,7 @@
 using Entities.Data;
 using Entities.Models;
 using Entities.Types;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace AnimeSeed;
@@ -136,5 +137,36 @@ public static class DataSeeding
             "upcoming" => MediaStatus.UPCOMING,
             _ => MediaStatus.UNKNOWN
         };
+    }
+
+    public static async Task CleanTagsAsync(DataContext context)
+    {
+        var duplicateTags = context.Tags
+            .GroupBy(t => t.Name)
+            .Where(g => g.Count() > 1)
+            .SelectMany(g => g.OrderBy(t => t.TagId)
+                .Skip(1))
+            .ToList(); 
+
+        foreach (var duplicateTag in duplicateTags)
+        {
+            var mediaTagsToUpdate = context.MediaTags
+                .Where(mt => mt.TagId == duplicateTag.TagId)
+                .ToList(); // Load data into memory
+
+            var tagToKeep = duplicateTag.MediaTags.FirstOrDefault()?.Tag;
+
+            if (tagToKeep != null)
+            {
+                foreach (var mediaTagToUpdate in mediaTagsToUpdate)
+                {
+                    mediaTagToUpdate.TagId = tagToKeep.TagId;
+                }
+            }
+
+            context.Tags.Remove(duplicateTag);
+        }
+
+        context.SaveChanges();
     }
 }

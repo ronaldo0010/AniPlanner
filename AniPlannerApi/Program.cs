@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AnimeSeed;
 using Contracts;
 using Entities.Data;
@@ -38,17 +39,23 @@ using(var scope = app.Services.CreateScope())
         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
         db.Database.Migrate(); // Creates and migrates database
         
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
         var tasks = new List<Task>();
         // TODO: check that this runs in batches
+        
         await foreach (var mediaList in DataSeeding.ProcessDataAsync(db))
         {
             tasks.Add(db.AddRangeAsync(mediaList));
         }
         
+        // if (tasks.Any()) await DataSeeding.CleanTagsAsync(db);
+        
         await Task.WhenAll(tasks);
         await db.SaveChangesAsync();
+        stopwatch.Stop();
         
-
+        Console.WriteLine($"==== TIME ELAPSED: {stopwatch.Elapsed} ====");
         Console.WriteLine("==== FINISHED MIGRATIONS ====");
     }
     catch(Exception ex)
