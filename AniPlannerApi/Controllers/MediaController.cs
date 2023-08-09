@@ -1,11 +1,12 @@
 using Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AniPlannerApi.Controllers;
 
 public class MediaController : ControllerBase
 {
-    private IUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     
     public MediaController(IUnitOfWork uow)
     {
@@ -13,35 +14,36 @@ public class MediaController : ControllerBase
     }
     
     [HttpGet("random-one")]
-    public IActionResult GetSingleMedia()
+    public async Task<IActionResult> GetSingleMedia()
     {
         var media = _uow.MediaRepo.FindAll();
         var skip = new Random().Next(0, media.Count());
-        var result = media.Skip(skip).First();
+        var result = await media.Skip(skip).FirstAsync();
         
         return Ok(result);
     }
     
     
     [HttpGet("all")]
-    public IActionResult GetAllMedia()
+    public async Task<IActionResult> GetAllMedia()
     {
         var media = _uow.MediaRepo.FindAll();
+        var result = await media.ToListAsync();
         
-        return Ok(media.ToList());
+        return Ok(result);
     }
     
     
     [HttpGet("batch")]
-    public IActionResult GetBatchMedia()
+    public async Task<IActionResult> GetBatchMedia()
     {
         var media = _uow.MediaRepo.FindAll();
         var skip = new Random().Next(0, media.Count());
 
-        var result = media
+        var result = await media
             .Skip(skip)
             .Take(10)
-            .ToList();
+            .ToListAsync();
         
         return Ok(result);
     }
