@@ -9,6 +9,6 @@ public class SystemController : ControllerBase
     [HttpGet]
     public ActionResult<string> GetSystemStatus()
     {
-        return Ok("version: 1.0.0");
+        return Ok("version: 1.0.1");
     }
 }
