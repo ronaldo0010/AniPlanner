@@ -1,3 +1,4 @@
+using Entities.Data;
 using Entities.Models;
 using Entities.Types;
 using Newtonsoft.Json;
@@ -35,11 +36,13 @@ public static class DataSeeding
     
     // TODO: Add documentation 
     // DIP implementation from SOLID principles
-    public static async IAsyncEnumerable<List<Media>> ProcessDataAsync()
+    public static async IAsyncEnumerable<List<Media>> ProcessDataAsync(DataContext dataContext)
     {
         const string fileName = "anime-data.json";
         const int batchSize = 1000;
         
+        if (dataContext.Media.Any())  yield break;
+
         var filePath = $@"{Directory.GetCurrentDirectory()}\..\{fileName}";
         var animeDataList = GetDataList(filePath).ToList();
         

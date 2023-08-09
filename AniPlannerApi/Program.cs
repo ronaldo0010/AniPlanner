@@ -40,7 +40,7 @@ using(var scope = app.Services.CreateScope())
         
         var tasks = new List<Task>();
         // TODO: check that this runs in batches
-        await foreach (var mediaList in DataSeeding.ProcessDataAsync())
+        await foreach (var mediaList in DataSeeding.ProcessDataAsync(db))
         {
             tasks.Add(db.AddRangeAsync(mediaList));
         }
