@@ -40,8 +40,7 @@ public static class DataSeeding
         const string fileName = "anime-data.json";
         const int batchSize = 1000;
         
-        // TODO: move file to root of solution sproject 
-        var filePath = $@"{Directory.GetCurrentDirectory()}\Data\{fileName}";
+        var filePath = $@"{Directory.GetCurrentDirectory()}\..\{fileName}";
         var animeDataList = GetDataList(filePath).ToList();
         
         // TODO: possible performance refactor such that yield returns batches 

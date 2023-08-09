@@ -37,7 +37,7 @@ using(var scope = app.Services.CreateScope())
         Console.WriteLine("==== APPLYING MIGRATIONS ====");
         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
         db.Database.Migrate(); // Creates and migrates database
-        /*
+        
         var tasks = new List<Task>();
         // TODO: check that this runs in batches
         await foreach (var mediaList in DataSeeding.ProcessDataAsync())
@@ -47,7 +47,7 @@ using(var scope = app.Services.CreateScope())
         
         await Task.WhenAll(tasks);
         await db.SaveChangesAsync();
-        */
+        
 
         Console.WriteLine("==== FINISHED MIGRATIONS ====");
     }
