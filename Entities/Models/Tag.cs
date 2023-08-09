@@ -8,5 +8,4 @@ public class Tag
     public Guid TagId { get; set; }
     public string Name { get; set; }
     public ICollection<MediaTag> MediaTags { get; set; }
-    public Guid MediaId { get; set; }
 }
